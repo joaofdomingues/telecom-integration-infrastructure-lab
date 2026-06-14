@@ -1,0 +1,9 @@
+{
+  "policy_name": "telecom_lab_policy",
+  "rules": [
+    {"source": "NOC", "destination": "AVEIRO-5G-001", "port": 22, "protocol": "TCP", "action": "ALLOW"},
+    {"source": "NOC", "destination": "AVEIRO-5G-002", "port": 22, "protocol": "TCP", "action": "ALLOW"},
+    {"source": "PUBLIC", "destination": "AVEIRO-5G-001", "port": 22, "protocol": "TCP", "action": "DENY"},
+    {"source": "MONITORING", "destination": "AVEIRO-4G-001", "port": 443, "protocol": "TCP", "action": "ALLOW"}
+  ]
+}

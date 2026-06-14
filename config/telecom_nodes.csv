@@ -1,0 +1,5 @@
+node_id,technology,ip_address,ssh_port,service_name,expected_latency_ms
+AVEIRO-5G-001,5G,192.168.10.21,22,small-cell-agent,18
+AVEIRO-5G-002,5G,192.168.10.22,22,small-cell-agent,27
+AVEIRO-4G-001,4G,192.168.10.31,22,lte-gateway,42
+LAB-BROKEN-001,5G,999.168.10.40,70000,small-cell-agent,80

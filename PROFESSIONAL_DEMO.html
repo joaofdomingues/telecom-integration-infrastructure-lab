@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Telecom Integration Lab · Demo v3</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700;800;900&display=swap');
+:root{
+  --bg:#04100a;--s1:#081410;--s2:#0d1f18;
+  --b1:rgba(52,211,153,.10);--b2:rgba(52,211,153,.22);
+  --tx:#d9f2e8;--mu:#52796f;--di:#84a98c;
+  --gr:#34d399;--gr2:#6ee7b7;--te:#2dd4bf;
+  --am:#fbbf24;--re:#fb7185;--bl:#60a5fa;
+  --mo:'JetBrains Mono',monospace;--sa:'Inter',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sa);background:var(--bg);color:var(--tx);overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 60% 45% at 5% 5%,rgba(52,211,153,.07) 0%,transparent 60%),
+             radial-gradient(ellipse 45% 40% at 95% 85%,rgba(45,212,191,.05) 0%,transparent 60%);}
+.sh{max-width:1140px;margin:0 auto;padding:0 24px 80px;position:relative;z-index:1}
+
+nav{display:flex;align-items:center;justify-content:space-between;padding:18px 0;
+  border-bottom:1px solid var(--b1);position:sticky;top:0;
+  background:rgba(4,16,10,.92);backdrop-filter:blur(20px);z-index:100}
+.nav-id{font-family:var(--mo);font-size:12px;color:var(--gr);display:flex;align-items:center;gap:10px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--gr);box-shadow:0 0 10px var(--gr);animation:pulse 2.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.nav-tags{display:flex;gap:6px}
+.tag{font-size:10px;font-weight:700;padding:4px 10px;border-radius:8px;
+  background:rgba(52,211,153,.07);border:1px solid var(--b1);color:var(--gr2);
+  letter-spacing:.05em;text-transform:uppercase}
+
+.hero{padding:64px 0 48px;display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:20px;
+  background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.18);
+  color:var(--gr2);font-size:11px;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;padding:6px 12px;border-radius:999px}
+h1{font-size:clamp(30px,5vw,54px);font-weight:900;line-height:.93;letter-spacing:-.04em;margin-bottom:20px}
+h1 em{font-style:normal;color:var(--gr)}
+.hero-desc{font-size:15px;color:var(--di);line-height:1.72;margin-bottom:28px}
+.stats{display:flex;gap:24px;flex-wrap:wrap}
+.sv{font-size:24px;font-weight:900;letter-spacing:-.04em;color:var(--gr)}
+.sl{font-size:10px;color:var(--mu);margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
+
+.term{background:#020e08;border:1px solid var(--b2);border-radius:18px;overflow:hidden;
+  box-shadow:0 32px 64px rgba(0,0,0,.55)}
+.tbar{background:var(--s2);padding:11px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--b1)}
+.td{width:12px;height:12px;border-radius:50%}
+.td.r{background:#ff5f57}.td.y{background:#febc2e}.td.g{background:#28c840}
+.tlbl{font-family:var(--mo);font-size:11px;color:var(--mu);margin:0 auto}
+.tbody{padding:16px 18px;font-family:var(--mo);font-size:11.5px;line-height:1.75;min-height:260px}
+.cur{display:inline-block;width:8px;height:14px;background:var(--gr);animation:blink .85s infinite;vertical-align:text-bottom}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+.sec{margin-top:60px}
+.shdr{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.stag{font-family:var(--mo);font-size:10px;font-weight:700;color:var(--gr);
+  background:rgba(52,211,153,.07);border:1px solid var(--b1);
+  padding:4px 10px;border-radius:6px;letter-spacing:.06em;text-transform:uppercase}
+.shdr h2{font-size:21px;font-weight:800;letter-spacing:-.03em}
+.sline{flex:1;height:1px;background:var(--b1)}
+
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:20px;
+  position:relative;overflow:hidden;transition:border-color .2s,transform .15s}
+.card:hover{border-color:var(--b2);transform:translateY(-2px)}
+.card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:16px 16px 0 0;
+  background:linear-gradient(90deg,var(--gr),var(--te))}
+.card-ico{font-size:22px;margin-bottom:10px}
+.card-name{font-size:13px;font-weight:800;margin-bottom:6px}
+.card-file{font-family:var(--mo);font-size:10px;color:var(--gr2);margin-bottom:6px}
+.card-desc{font-size:12px;color:var(--di);line-height:1.6}
+
+.highlight{background:rgba(52,211,153,.05);border:1px solid rgba(52,211,153,.14);
+  border-radius:14px;padding:16px 18px;margin-bottom:12px}
+.hl-title{font-size:11px;font-weight:800;color:var(--gr2);margin-bottom:8px;
+  text-transform:uppercase;letter-spacing:.05em;font-family:var(--mo)}
+.hl-body{font-size:13px;color:var(--di);line-height:1.65}
+.hl-body code{font-family:var(--mo);color:var(--gr2);font-size:11px;
+  background:rgba(52,211,153,.08);padding:1px 5px;border-radius:4px}
+
+.cw{background:#020e08;border:1px solid var(--b1);border-radius:14px;overflow:hidden;margin-bottom:12px}
+.ch{background:var(--s2);padding:9px 14px;font-family:var(--mo);font-size:10px;
+  color:var(--mu);border-bottom:1px solid var(--b1);
+  display:flex;justify-content:space-between;align-items:center}
+.cl{color:var(--gr2);font-weight:700;font-size:10px}
+pre{margin:0;padding:14px 16px;font-family:var(--mo);font-size:11.5px;line-height:1.65;overflow-x:auto;color:#cce8d8}
+.kw{color:#c084fc}.ty{color:#67e8f9}.fn{color:#fde68a}.st{color:#86efac}
+.cm{color:#3d5a48;font-style:italic}.nu{color:#fb923c}
+
+/* NODE TABLE */
+.nwrap{background:var(--s1);border:1px solid var(--b1);border-radius:16px;overflow:hidden}
+.nwrap-hdr{background:var(--s2);padding:11px 16px;font-family:var(--mo);font-size:11px;
+  color:var(--mu);border-bottom:1px solid var(--b1);
+  display:flex;justify-content:space-between;align-items:center}
+.ntbl{width:100%;border-collapse:collapse}
+.ntbl th,.ntbl td{padding:11px 14px;font-size:12px;text-align:left;border-bottom:1px solid var(--b1)}
+.ntbl th{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.ntbl tr:last-child td{border-bottom:none}
+.ntbl tr:hover td{background:rgba(52,211,153,.03)}
+.ok-t{color:var(--gr);font-weight:700;font-family:var(--mo);font-size:12px}
+.fa-t{color:var(--re);font-weight:700;font-family:var(--mo);font-size:12px}
+.wa-t{color:var(--am);font-weight:700;font-family:var(--mo);font-size:12px}
+.r-b{color:#022c22;background:var(--gr);padding:2px 7px;border-radius:5px;font-size:10px;font-weight:900;font-family:var(--mo)}
+.c-b{color:#451a03;background:var(--am);padding:2px 7px;border-radius:5px;font-size:10px;font-weight:900;font-family:var(--mo)}
+.tb5{font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;
+  background:rgba(52,211,153,.15);color:var(--gr);font-family:var(--mo)}
+.tb4{font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;
+  background:rgba(96,165,250,.15);color:var(--bl);font-family:var(--mo)}
+
+/* CP FLOW */
+.cpf{display:flex;flex-direction:column;gap:4px}
+.cps{display:flex;align-items:flex-start;gap:12px;background:var(--s1);
+  border:1px solid var(--b1);border-radius:12px;padding:12px 14px;transition:background .2s}
+.cps:hover{background:var(--s2)}
+.cpmet{font-family:var(--mo);font-size:10px;font-weight:700;padding:3px 8px;
+  border-radius:6px;white-space:nowrap;margin-top:1px;
+  background:rgba(52,211,153,.12);color:var(--gr)}
+.cpp{font-family:var(--mo);font-size:12px;color:var(--gr2);margin-bottom:4px}
+.cpd{font-size:12px;color:var(--di);line-height:1.5}
+.cpa{text-align:center;color:var(--mu);font-size:18px;line-height:1}
+
+/* THREAD highlight */
+.thread-vis{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.tv-node{background:var(--s2);border:1px solid var(--b2);border-radius:10px;
+  padding:10px 14px;font-family:var(--mo);font-size:11px;
+  display:flex;flex-direction:column;gap:4px;min-width:140px}
+.tv-id{color:var(--gr2);font-weight:700}
+.tv-thr{color:var(--mu);font-size:10px}
+.tv-ok{color:var(--gr);font-size:10px;font-weight:700}
+
+.pipe{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ps2{display:flex;align-items:center;gap:7px;background:var(--s2);
+  border:1px solid rgba(52,211,153,.22);border-radius:10px;
+  padding:9px 14px;font-size:12px;font-weight:600;color:var(--gr)}
+.pa{color:var(--mu);font-size:16px}
+
+.tools{display:flex;flex-wrap:wrap;gap:10px}
+.tool{display:flex;align-items:center;gap:8px;background:var(--s1);
+  border:1px solid var(--b1);border-radius:10px;padding:8px 14px;
+  font-size:12px;font-weight:600;color:var(--di);transition:border-color .2s,color .2s}
+.tool:hover{border-color:var(--b2);color:var(--tx)}
+
+footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--b1);
+  display:flex;justify-content:space-between;align-items:center;color:var(--mu);font-size:12px}
+
+@media(max-width:900px){
+  .hero,.g2{grid-template-columns:1fr}
+  .g3{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){.g3{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="sh">
+
+<nav>
+  <div class="nav-id"><span class="dot"></span>telecom-integration-infrastructure-lab v3</div>
+  <div class="nav-tags">
+    <span class="tag">C++17</span><span class="tag">Threads</span>
+    <span class="tag">RAII</span><span class="tag">SIGTERM</span><span class="tag">Check Point</span>
+  </div>
+</nav>
+
+<section class="hero">
+  <div>
+    <div class="eyebrow">Integration Infrastructure · Telecom · Aveiro</div>
+    <h1>Telecom<br><em>Integration</em><br>Lab v3</h1>
+    <p class="hero-desc">
+      Checker C++17 com validação paralela de nós via <code style="font-family:var(--mo);color:var(--gr2);font-size:13px">std::thread</code> e
+      <code style="font-family:var(--mo);color:var(--gr2);font-size:13px">std::mutex</code>, RAII com
+      <code style="font-family:var(--mo);color:var(--gr2);font-size:13px">std::unique_ptr</code>,
+      SIGTERM graceful shutdown, cliente REST Check Point e SSH health check com Paramiko.
+    </p>
+    <div class="stats">
+      <div><div class="sv">4</div><div class="sl">Nós validados</div></div>
+      <div><div class="sv">11</div><div class="sl">Testes C++</div></div>
+      <div><div class="sv">12</div><div class="sl">Testes Python</div></div>
+      <div><div class="sv">N</div><div class="sl">Threads paralelas</div></div>
+    </div>
+  </div>
+  <div class="term">
+    <div class="tbar">
+      <span class="td r"></span><span class="td y"></span><span class="td g"></span>
+      <span class="tlbl">telecom_integration_checker — parallel mode</span>
+    </div>
+    <div class="tbody" id="heroTerm"></div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section class="sec">
+  <div class="shdr"><span class="stag">01</span><h2>Componentes — novidades v3</h2><span class="sline"></span></div>
+  <div class="g3">
+    <div class="card">
+      <div class="card-ico">🧵</div>
+      <div class="card-name">ValidationWorker</div>
+      <div class="card-file">src/main.cpp</div>
+      <div class="card-desc">Cada nó é validado numa thread separada. <code style="font-family:var(--mo);font-size:10px;color:var(--gr2)">std::unique_ptr&lt;ValidationWorker&gt;</code> com destructor que faz <code style="font-family:var(--mo);font-size:10px;color:var(--gr2)">join()</code> — RAII garante que todas as threads terminam.</div>
+    </div>
+    <div class="card">
+      <div class="card-ico">🔒</div>
+      <div class="card-name">std::mutex + lock_guard</div>
+      <div class="card-file">src/main.cpp</div>
+      <div class="card-desc">Resultados agregados com <code style="font-family:var(--mo);font-size:10px;color:var(--gr2)">std::lock_guard&lt;std::mutex&gt;</code>. Acesso ao vector partilhado é thread-safe. Sem data races.</div>
+    </div>
+    <div class="card">
+      <div class="card-ico">🚦</div>
+      <div class="card-name">SIGTERM Handler</div>
+      <div class="card-file">src/main.cpp</div>
+      <div class="card-desc"><code style="font-family:var(--mo);font-size:10px;color:var(--gr2)">std::atomic&lt;bool&gt; g_shutdown</code> verificado antes de lançar cada worker. SIGTERM interrompe o processo de validação limpo.</div>
+    </div>
+    <div class="card">
+      <div class="card-ico">🔍</div>
+      <div class="card-name">Network Validator</div>
+      <div class="card-file">src/network_validator.cpp</div>
+      <div class="card-desc">Thread-safe: lê nó por valor, sem estado mutável partilhado. <code style="font-family:var(--mo);font-size:10px;color:var(--gr2)">detail</code> string com razão específica de falha por campo.</div>
+    </div>
+    <div class="card">
+      <div class="card-ico">🔥</div>
+      <div class="card-name">Check Point API Client</div>
+      <div class="card-file">scripts/checkpoint_api_client.py</div>
+      <div class="card-desc">Login → show-access-rulebase → validate_rules → logout. Mock server integrado. 9 testes pytest. Baseline: SSH público (HIGH), Telnet (MEDIUM), Any→Any (HIGH).</div>
+    </div>
+    <div class="card">
+      <div class="card-ico">📊</div>
+      <div class="card-name">Report Generator</div>
+      <div class="card-file">scripts/generate_lab_report.py</div>
+      <div class="card-desc">Lê CSV + JSON, valida nós e firewall, gera relatório consolidado com timestamp UTC. Dataclasses com type hints completos. Usado como artefacto pós-CI.</div>
+    </div>
+  </div>
+</section>
+
+<!-- THREADS -->
+<section class="sec">
+  <div class="shdr"><span class="stag">02</span><h2>Validação paralela com threads</h2><span class="sline"></span></div>
+  <div class="g2">
+    <div>
+      <div class="highlight">
+        <div class="hl-title">ValidationWorker — RAII thread ownership</div>
+        <div class="hl-body">Cada worker é um <code>std::unique_ptr</code>. O destructor chama <code>join()</code> automaticamente. <code>workers.clear()</code> faz join de todas as threads antes de continuar — sem <code>detach()</code>, sem leaks.</div>
+      </div>
+      <div class="cw">
+        <div class="ch"><span>src/main.cpp — parallel validation</span><span class="cl">C++17</span></div>
+        <pre><span class="ty">std::mutex</span> resultsMutex;
+std::vector&lt;std::<span class="ty">unique_ptr</span>&lt;
+    ValidationWorker&gt;&gt; workers;
+
+<span class="kw">for</span> (<span class="kw">const auto</span>&amp; node : nodes) {
+  <span class="kw">if</span> (g_shutdown.<span class="fn">load</span>()) <span class="kw">break</span>;
+  workers.<span class="fn">push_back</span>(
+    std::<span class="fn">make_unique</span>&lt;ValidationWorker&gt;(node));
+  workers.<span class="fn">back</span>()-&gt;<span class="fn">run</span>(results, resultsMutex);
+}
+<span class="cm">// RAII: workers.clear() → join all threads</span>
+workers.<span class="fn">clear</span>();</pre>
+      </div>
+      <div class="cw">
+        <div class="ch"><span>ValidationWorker — thread + mutex</span><span class="cl">C++17</span></div>
+        <pre><span class="ty">void</span> <span class="fn">run</span>(std::vector&lt;ValidationResult&gt;&amp; results,
+         std::<span class="ty">mutex</span>&amp; mtx) {
+  thread_ = std::<span class="ty">thread</span>([<span class="kw">this</span>, &amp;results, &amp;mtx]() {
+    ValidationResult r = <span class="fn">validate_node</span>(node_);
+    std::lock_guard&lt;std::<span class="ty">mutex</span>&gt; <span class="fn">lock</span>(mtx);
+    results.<span class="fn">push_back</span>(std::<span class="fn">move</span>(r));
+  });
+}
+<span class="cm">// Destructor RAII:</span>
+~ValidationWorker() { <span class="fn">join</span>(); }</pre>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Visualização — 4 threads em paralelo</p>
+      <div class="thread-vis">
+        <div class="tv-node"><div class="tv-id">AVEIRO-5G-001</div><div class="tv-thr">thread #0</div><div class="tv-ok">✓ READY</div></div>
+        <div class="tv-node"><div class="tv-id">AVEIRO-5G-002</div><div class="tv-thr">thread #1</div><div class="tv-ok">✓ READY</div></div>
+        <div class="tv-node"><div class="tv-id">AVEIRO-4G-001</div><div class="tv-thr">thread #2</div><div class="tv-ok">✓ READY</div></div>
+        <div class="tv-node" style="border-color:rgba(251,191,36,.3)"><div class="tv-id">LAB-BROKEN-001</div><div class="tv-thr">thread #3</div><div style="color:var(--am);font-size:10px;font-weight:700">⚠ CHECK</div></div>
+      </div>
+      <div class="highlight">
+        <div class="hl-title">Teste de thread-safety — 20 threads</div>
+        <div class="hl-body">O <code>test_validator.cpp</code> lança 20 threads em simultâneo, cada uma chamando <code>validate_node()</code>, e verifica que os 20 resultados são recolhidos sem data races. Cobre o <code>std::mutex</code> explicitamente.</div>
+      </div>
+      <div class="cw">
+        <div class="ch"><span>tests/test_validator.cpp — parallel test</span><span class="cl">CTest</span></div>
+        <pre><span class="cm">// 20 threads em simultâneo</span>
+<span class="kw">for</span> (<span class="kw">const auto</span>&amp; node : nodes) {
+  threads.<span class="fn">emplace_back</span>(
+    [&amp;node, &amp;results, &amp;mtx]() {
+      <span class="kw">auto</span> r = <span class="fn">validate_node</span>(node);
+      std::lock_guard&lt;std::<span class="ty">mutex</span>&gt; lock(mtx);
+      results.<span class="fn">push_back</span>(std::<span class="fn">move</span>(r));
+    });
+}
+<span class="kw">for</span> (<span class="kw">auto</span>&amp; t : threads) t.<span class="fn">join</span>();
+assert(results.<span class="fn">size</span>() == <span class="nu">20</span>); <span class="cm">// ✓</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NODE VALIDATION -->
+<section class="sec">
+  <div class="shdr"><span class="stag">03</span><h2>Validação de nós</h2><span class="sline"></span></div>
+  <div class="nwrap">
+    <div class="nwrap-hdr">
+      <span>$ ./telecom_integration_checker config/telecom_nodes.csv</span>
+      <span style="color:var(--gr);font-weight:700">4 nós · 3 ready · 1 check</span>
+    </div>
+    <table class="ntbl">
+      <thead><tr><th>Node ID</th><th>Tech</th><th>IP Address</th><th>SSH</th><th>Latência</th><th>IP</th><th>SSH Port</th><th>Lat.</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr>
+          <td style="font-family:var(--mo);font-size:12px">AVEIRO-5G-001</td>
+          <td><span class="tb5">5G</span></td>
+          <td style="font-family:var(--mo);font-size:12px">192.168.10.21</td>
+          <td style="font-family:var(--mo);font-size:12px">22</td>
+          <td style="font-family:var(--mo);font-size:12px">18 ms</td>
+          <td class="ok-t">✓</td><td class="ok-t">✓</td><td class="ok-t">✓</td>
+          <td><span class="r-b">READY</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--mo);font-size:12px">AVEIRO-5G-002</td>
+          <td><span class="tb5">5G</span></td>
+          <td style="font-family:var(--mo);font-size:12px">192.168.10.22</td>
+          <td style="font-family:var(--mo);font-size:12px">22</td>
+          <td style="font-family:var(--mo);font-size:12px">27 ms</td>
+          <td class="ok-t">✓</td><td class="ok-t">✓</td><td class="ok-t">✓</td>
+          <td><span class="r-b">READY</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--mo);font-size:12px">AVEIRO-4G-001</td>
+          <td><span class="tb4">4G</span></td>
+          <td style="font-family:var(--mo);font-size:12px">192.168.10.31</td>
+          <td style="font-family:var(--mo);font-size:12px">22</td>
+          <td style="font-family:var(--mo);font-size:12px">42 ms</td>
+          <td class="ok-t">✓</td><td class="ok-t">✓</td><td class="ok-t">✓</td>
+          <td><span class="r-b">READY</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--mo);font-size:12px">LAB-BROKEN-001</td>
+          <td><span class="tb5">5G</span></td>
+          <td style="font-family:var(--mo);font-size:12px;color:var(--re)">999.168.10.40</td>
+          <td style="font-family:var(--mo);font-size:12px;color:var(--re)">70000</td>
+          <td style="font-family:var(--mo);font-size:12px;color:var(--am)">80 ms</td>
+          <td class="fa-t">✗</td><td class="fa-t">✗</td><td class="wa-t">⚠</td>
+          <td><span class="c-b">CHECK</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:10px;padding:12px 16px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.18);border-radius:10px;font-family:var(--mo);font-size:12px;color:var(--am)">
+    → LAB-BROKEN-001: Invalid IPv4 (999.168.10.40). Invalid SSH port (70000). Latency 80ms exceeds 50ms threshold.
+  </div>
+</section>
+
+<!-- CHECK POINT -->
+<section class="sec">
+  <div class="shdr"><span class="stag">04</span><h2>Check Point Firewall API</h2><span class="sline"></span></div>
+  <div class="g2">
+    <div>
+      <div class="cpf">
+        <div class="cps"><span class="cpmet">POST</span><div><div class="cpp">/web_api/login</div><div class="cpd">Autentica e recebe session token (<code style="font-family:var(--mo);font-size:10px">sid</code>). Guardado no header <code style="font-family:var(--mo);font-size:10px">X-chkp-sid</code>.</div></div></div>
+        <div class="cpa">↓</div>
+        <div class="cps"><span class="cpmet">POST</span><div><div class="cpp">/web_api/show-access-rulebase</div><div class="cpd">Fetch das access rules da layer "Network". Devolve source, destination, port, action.</div></div></div>
+        <div class="cpa">↓</div>
+        <div class="cps"><span class="cpmet" style="background:rgba(251,191,36,.12);color:var(--am)">VALIDATE</span><div><div class="cpp">validate_rules()</div><div class="cpd">Baseline: SSH público (HIGH), Any→Any (HIGH), Telnet (MEDIUM). Devolve ValidationFinding list.</div></div></div>
+        <div class="cpa">↓</div>
+        <div class="cps"><span class="cpmet">POST</span><div><div class="cpp">/web_api/logout</div><div class="cpd">Invalida sessão. Sempre executado, mesmo em erro.</div></div></div>
+      </div>
+    </div>
+    <div>
+      <div class="cw">
+        <div class="ch"><span>$ python scripts/checkpoint_api_client.py</span><span class="cl">stdout</span></div>
+        <pre>[INFO] Running in MOCK mode
+
+[LOGIN]      OK (sid: mock-token-abc123)
+[RULES]      3 access rule(s) retrieved.
+             rule-001: NOC → AVEIRO-5G-001:22  ALLOW
+             rule-002: MON → AVEIRO-5G-002:443 ALLOW
+             rule-003: Any → Any:23             ALLOW <span style="color:var(--am)">⚠</span>
+
+[VALIDATION] 1 finding:
+  [<span style="color:var(--am);font-weight:700">MEDIUM</span>] Rule rule-003:
+           Telnet (port 23) is a plaintext
+           protocol; use SSH instead.
+
+[LOGOUT]     Session closed.</pre>
+      </div>
+      <div class="cw">
+        <div class="ch"><span>$ python -m pytest tests/test_checkpoint_client.py -v</span><span class="cl">pytest</span></div>
+        <pre>::test_login_returns_true           <span style="color:var(--gr)">PASSED</span>
+::test_logout_clears_token          <span style="color:var(--gr)">PASSED</span>
+::test_get_access_rules_returns_list <span style="color:var(--gr)">PASSED</span>
+::test_rules_have_expected_fields   <span style="color:var(--gr)">PASSED</span>
+::test_clean_rules_no_findings      <span style="color:var(--gr)">PASSED</span>
+::test_public_ssh_flagged_high      <span style="color:var(--gr)">PASSED</span>
+::test_telnet_flagged_medium        <span style="color:var(--gr)">PASSED</span>
+::test_any_to_any_flagged_high      <span style="color:var(--gr)">PASSED</span>
+::test_mock_policy_one_finding      <span style="color:var(--gr)">PASSED</span>
+<span style="color:var(--gr);font-weight:700">9 passed</span> in 0.14s</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CI -->
+<section class="sec">
+  <div class="shdr"><span class="stag">05</span><h2>CI/CD Pipeline</h2><span class="sline"></span></div>
+  <div class="pipe">
+    <div class="ps2">📥 Checkout</div><span class="pa">→</span>
+    <div class="ps2">🔨 CMake + pthreads</div><span class="pa">→</span>
+    <div class="ps2">🧵 CTest (11 testes)</div><span class="pa">→</span>
+    <div class="ps2">▶️ Run checker</div><span class="pa">→</span>
+    <div class="ps2">🐍 pytest (12)</div><span class="pa">→</span>
+    <div class="ps2">🔍 SonarCloud</div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section class="sec">
+  <div class="shdr"><span class="stag">06</span><h2>Stack tecnológico</h2><span class="sline"></span></div>
+  <div class="tools">
+    <div class="tool">⚙️ C++17</div><div class="tool">🧵 std::thread</div>
+    <div class="tool">🔒 std::mutex</div><div class="tool">🔒 std::lock_guard</div>
+    <div class="tool">📦 std::unique_ptr</div><div class="tool">🔒 std::atomic</div>
+    <div class="tool">🔗 std::regex IPv4</div><div class="tool">🐍 Python 3.12</div>
+    <div class="tool">🔑 Paramiko</div><div class="tool">🔥 Check Point API</div>
+    <div class="tool">📡 4G / 5G NR</div><div class="tool">🧱 CMake + pthreads</div>
+    <div class="tool">🔬 pytest</div><div class="tool">🔍 SonarCloud</div>
+    <div class="tool">🐙 GitHub Actions</div><div class="tool">🐳 Docker</div>
+    <div class="tool">☸️ Kubernetes</div><div class="tool">🖥️ VMware</div>
+  </div>
+</section>
+
+<footer>
+  <span>Telecom Integration Infrastructure Lab v3 · Portfolio Demo</span>
+  <span style="color:var(--gr);font-family:var(--mo);font-size:11px">C++17 · Threads · RAII · 4G/5G · Check Point</span>
+</footer>
+</div>
+
+<script>
+const lines=[
+  {t:0,   h:'<span style="color:var(--gr)">user@aveiro-lab:~$</span> <span style="color:var(--gr2)">./telecom_integration_checker config/telecom_nodes.csv</span>'},
+  {t:500, h:'<span style="color:var(--mu)">[INFO] Launching 4 validation threads in parallel...</span>'},
+  {t:900, h:'<span style="color:var(--te)">[thread #0]</span> AVEIRO-5G-001 → validating...'},
+  {t:1000,h:'<span style="color:var(--te)">[thread #1]</span> AVEIRO-5G-002 → validating...'},
+  {t:1100,h:'<span style="color:var(--te)">[thread #2]</span> AVEIRO-4G-001 → validating...'},
+  {t:1200,h:'<span style="color:var(--te)">[thread #3]</span> LAB-BROKEN-001 → validating...'},
+  {t:1700,h:'<span style="color:var(--mu)">[INFO] All threads joined (RAII)</span>'},
+  {t:2000,h:'&nbsp;'},
+  {t:2100,h:'<span style="color:var(--te);font-weight:700">TELECOM INTEGRATION VALIDATION REPORT</span>'},
+  {t:2300,h:'<span style="color:var(--mu)">──────────────────────────────────────────</span>'},
+  {t:2500,h:'AVEIRO-5G-001   OK   OK   OK   <span style="color:var(--gr);font-weight:700">READY_FOR_INTEGRATION</span>'},
+  {t:2700,h:'AVEIRO-5G-002   OK   OK   OK   <span style="color:var(--gr);font-weight:700">READY_FOR_INTEGRATION</span>'},
+  {t:2900,h:'AVEIRO-4G-001   OK   OK   OK   <span style="color:var(--gr);font-weight:700">READY_FOR_INTEGRATION</span>'},
+  {t:3100,h:'LAB-BROKEN-001  FAIL FAIL WARN <span style="color:var(--am);font-weight:700">CHECK_REQUIRED</span>'},
+  {t:3300,h:'<span style="color:var(--mu)">  → Invalid IPv4 (999.168.10.40). SSH port 70000 invalid.</span>'},
+  {t:3600,h:'&nbsp;'},
+  {t:3800,h:'<span style="color:var(--gr)">Summary: 3 ready, 1 check required. exit 2</span>'},
+  {t:4200,h:'<span style="color:var(--gr)">user@aveiro-lab:~$</span> <span class="cur"></span>'},
+];
+const term=document.getElementById('heroTerm');
+lines.forEach(({t,h})=>{
+  setTimeout(()=>{
+    const cur=term.querySelector('.cur');
+    if(cur){const p=cur.parentElement;if(p)p.remove();}
+    const d=document.createElement('div');
+    d.innerHTML=h;term.appendChild(d);
+    term.scrollTop=term.scrollHeight;
+  },t);
+});
+</script>
+</body>
+</html>
